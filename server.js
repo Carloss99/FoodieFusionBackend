@@ -1,46 +1,81 @@
-//Page to hold all our routes
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-//declare a variable for our port number
+const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Import Dependencies
-const express = require("express");
-const cors = require("cors");
+const mongoURI = 'MONGODB_URI'; // Replace with actual MongoDB URI
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Import JSON files
-const projects = require("./projects.json");
-const about = require("./about.json");
-
-// Create our app object
-const app = express();
-
-// set up middleware
-app.use(cors());
-
-//home route for testing our app
-app.get("/", (req, res) => {
-  res.send("Hello World");
+const Restaurant = mongoose.model('Restaurant', {
+  name: String,
+  description: String,
+  // Add more fields as needed
 });
 
-// READ (Index Route) "My Reviews page"
-// GET /review-menu-items Display a list of all reviewed menu items.
+const MenuItem = mongoose.model('MenuItem', {
+  restaurantId: String,
+  name: String,
+  price: Number,
+  // Add more fields as needed
+});
 
-// CREATE (New and Post Route) 
-// GET /review-menu-items/new Display a form for adding a new menu item review.
-// POST /review-menu-items: Create a new menu item review
+const Review = mongoose.model('Review', {
+  menuItemId: String,
+  text: String,
+  rating: Number,
+  // Add more fields as needed
+});
 
-// SHOW
-// GET /review-menu-items/:id Display the details of a specific menu item review.
+app.use(cors());
+app.use(bodyParser.json());
 
-// UPDATE / Edit 
-// GET /review-menu-items/id/edit: Display a form for editing a menu item review.
-// PUT /review-menu-items/id: Update a menu item review.
+app.post('/api/restaurants', (req, res) => {
+  const { name, description } = req.body;
+  const newRestaurant = new Restaurant({ name, description });
 
-// DELETE
-// DELETE /review-menu-items/id: Delete a menu item review
+  newRestaurant.save((err, restaurant) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error creating restaurant' });
+    }
+    return res.status(201).json(restaurant);
+  });
+});
 
+app.get('/api/restaurants', (req, res) => {
+  Restaurant.find({}, (err, restaurants) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error retrieving data' });
+    }
+    return res.json(restaurants);
+  });
+});
 
+app.post('/api/menu-items', (req, res) => {
+  const { restaurantId, name, price } = req.body;
+  const newMenuItem = new MenuItem({ restaurantId, name, price });
 
-app.listen("/", (req, res) => {
-    res.send(`Listening to :`, PORT)
-})
+  newMenuItem.save((err, menuItem) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error creating menu item' });
+    }
+    return res.status(201).json(menuItem);
+  });
+});
+
+app.get('/api/menu-items', (req, res) => {
+  MenuItem.find({}, (err, menuItems) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error retrieving data' });
+    }
+    return res.json(menuItems);
+  });
+});
+
+// Implement similar routes for reviews, images, and additional functionality.
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
