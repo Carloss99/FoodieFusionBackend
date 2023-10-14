@@ -1,80 +1,33 @@
+//Page to hold all our routes
+
 //declare a variable for our port number
 const PORT = process.env.PORT || 4000;
 
 // Import Dependencies
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser")
-require("dotenv").config()
 
-// database connection
-const mongoose = require("mongoose")
-const mongoURI = process.env.MONGO_URI
-mongoose.connect(mongoURI)
-const db = mongoose.connection
-db.on("connected", () => {console.log("mongoose connected")})
+// Import JSON files
+const projects = require("./projects.json");
+const about = require("./about.json");
 
 // Create our app object
 const app = express();
 
 // set up middleware
 app.use(cors());
-app.use(bodyParser.json());
 
 //home route for testing our app
-app.get("/", async (req, res) => {
-
+app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
 // READ (Index Route) "My Reviews page"
 // GET /review-menu-items Display a list of all reviewed menu items.
-// get all restaurants
-app.get('/api/restaurants', (req, res) => {
-  Restaurant.find({}, (err, restaurants) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error retrieving data' });
-    }
-    return res.json(restaurants);
-  });
-});
-// get menu items
-app.get('/api/menu-items', (req, res) => {
-  MenuItem.find({}, (err, menuItems) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error retrieving data' });
-    }
-    return res.json(menuItems);
-  });
-});
 
 // CREATE (New and Post Route) 
 // GET /review-menu-items/new Display a form for adding a new menu item review.
 // POST /review-menu-items: Create a new menu item review
-// create restaurant
-app.post('/api/restaurants', (req, res) => {
-  const { name, description } = req.body;
-  const newRestaurant = new Restaurant({ name, description });
-
-  newRestaurant.save((err, restaurant) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error creating restaurant' });
-    }
-    return res.status(201).json(restaurant);
-  });
-});
-// create menu item
-app.post('/api/menu-items', (req, res) => {
-  const { restaurantId, name, price } = req.body;
-  const newMenuItem = new MenuItem({ restaurantId, name, price });
-
-  newMenuItem.save((err, menuItem) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error creating menu item' });
-    }
-    return res.status(201).json(menuItem);
-  });
-});
 
 // SHOW
 // GET /review-menu-items/:id Display the details of a specific menu item review.
@@ -86,8 +39,8 @@ app.post('/api/menu-items', (req, res) => {
 // DELETE
 // DELETE /review-menu-items/id: Delete a menu item review
 
-console.log("hi")
 
-app.listen(PORT, () => {
-    console.log(`Listening to : ${PORT}`)
+
+app.listen("/", (req, res) => {
+    res.send(`Listening to :`, PORT)
 })
