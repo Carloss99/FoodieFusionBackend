@@ -86,7 +86,7 @@ app.post('/api/menu-items', (req, res) => {
 // DELETE
 // DELETE /review-menu-items/id: Delete a menu item review
 
-
+console.log("hi")
 
 app.listen(PORT, () => {
     console.log(`Listening to : ${PORT}`)
