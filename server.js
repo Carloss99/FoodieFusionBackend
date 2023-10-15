@@ -12,7 +12,13 @@ const mongoose = require("mongoose")
 const mongoURI = process.env.MONGO_URI
 mongoose.connect(mongoURI)
 const db = mongoose.connection
-db.on("connected", () => {console.log("mongoose connected")})
+db.on("connected", () => { console.log("mongoose connected") })
+
+// Database Variables
+const MenuItem = require("./models/MenuItem")
+const Restaurant = require("./models/Restaurant")
+const Review = require("./models/Review")
+const User = require("./models/users")
 
 // Create our app object
 const app = express();
@@ -23,29 +29,43 @@ app.use(bodyParser.json());
 
 //home route for testing our app
 app.get("/", async (req, res) => {
-
   res.send("Hello World");
 });
 
 // READ (Index Route) "My Reviews page"
 // GET /review-menu-items Display a list of all reviewed menu items.
 // get all restaurants
-app.get('/api/restaurants', (req, res) => {
-  Restaurant.find({}, (err, restaurants) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error retrieving data' });
-    }
-    return res.json(restaurants);
-  });
-});
+// app.get('/api/restaurants', (req, res) => {
+//   Restaurant.find({}, (err, restaurants) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'Error retrieving data' });
+//     }
+//     return res.json(restaurants);
+//   });
+// });
+app.get('/api/restaurants', async (req, res) => {
+  try {
+    res.json(await Restaurant.find({}))
+  } catch (error) {
+    res.status(500).json(error)
+  }
+})
+
 // get menu items
-app.get('/api/menu-items', (req, res) => {
-  MenuItem.find({}, (err, menuItems) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error retrieving data' });
-    }
-    return res.json(menuItems);
-  });
+// app.get('/api/menu-items', async (req, res) => {
+//   MenuItem.find({}, (err, menuItems) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'Error retrieving data' });
+//     }
+//     return res.json(menuItems);
+//   });
+// });
+app.get('/api/menu-items', async (req, res) => {
+  try {
+    res.json(await MenuItem.find({}))
+  } catch (error) {
+    res.status(500).json((error))
+  }
 });
 
 // CREATE (New and Post Route) 
@@ -63,7 +83,7 @@ app.post('/api/restaurants', (req, res) => {
     return res.status(201).json(restaurant);
   });
 });
-// create menu item
+// create menu item 
 app.post('/api/menu-items', (req, res) => {
   const { restaurantId, name, price } = req.body;
   const newMenuItem = new MenuItem({ restaurantId, name, price });
@@ -89,7 +109,7 @@ app.post('/api/menu-items', (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Listening to : ${PORT}`)
+  console.log(`Listening to : ${PORT}`)
 })
 
 
