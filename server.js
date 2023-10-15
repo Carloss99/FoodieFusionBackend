@@ -72,32 +72,51 @@ app.get('/api/menu-items', async (req, res) => {
 // GET /review-menu-items/new Display a form for adding a new menu item review.
 // POST /review-menu-items: Create a new menu item review
 // create restaurant
-app.post('/api/restaurants', (req, res) => {
-  const { name, description } = req.body;
-  const newRestaurant = new Restaurant({ name, description });
+// app.post('/api/restaurants', (req, res) => {
+//   const { name, description } = req.body;
+//   const newRestaurant = new Restaurant({ name, description });
 
-  newRestaurant.save((err, restaurant) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error creating restaurant' });
-    }
-    return res.status(201).json(restaurant);
-  });
+//   newRestaurant.save((err, restaurant) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'Error creating restaurant' });
+//     }
+//     return res.status(201).json(restaurant);
+//   });
+// });
+app.post('/api/restaurants', async (req, res) => {
+  try{
+    res.json(await Restaurant.create(req.body))
+}catch (error){
+    res.status(400).json(error)
+}
 });
+
+
 // create menu item 
-app.post('/api/menu-items', (req, res) => {
-  const { restaurantId, name, price } = req.body;
-  const newMenuItem = new MenuItem({ restaurantId, name, price });
+// app.post('/api/menu-items', (req, res) => {
+//   const { restaurantId, name, price } = req.body;
+//   const newMenuItem = new MenuItem({ restaurantId, name, price });
 
-  newMenuItem.save((err, menuItem) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error creating menu item' });
-    }
-    return res.status(201).json(menuItem);
-  });
-});
+//   newMenuItem.save((err, menuItem) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'Error creating menu item' });
+//     }
+//     return res.status(201).json(menuItem);
+//   });
+// });
+app.post("/api/menu-items", async (req, res)=> {
+  try{
+    res.json(await MenuItem.create(req.body))
+  } catch (error) {
+    res.status(400).json(error)
+  }
+})
+
 
 // SHOW
 // GET /review-menu-items/:id Display the details of a specific menu item review.
+
+
 
 // UPDATE / Edit 
 // GET /review-menu-items/id/edit: Display a form for editing a menu item review.
