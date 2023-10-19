@@ -181,6 +181,15 @@ app.put("/api/restaurants/:id", async(req,res)=>{
 
 // -------------------------- DELETE --------------------------
 // DELETE /review-menu-items/id: Delete a menu item review
+//Temporary 
+app.delete('/api/reviews', async (req,res) => {
+  try{
+    res.json(await Review.deleteMany({}))
+  }catch(error) {
+    res.send(400).json(error)
+  }
+})
+
 app.delete("/api/reviews/:id", async(req, res) => {
   try {
     res.json(await Review.findByIdAndDelete(req.params.id))
@@ -189,6 +198,8 @@ app.delete("/api/reviews/:id", async(req, res) => {
     response.send(400).json(error)
   }
 })
+
+
 
 // delete menu item
 app.delete("/api/menu-items/:id", async(req, res) => {
