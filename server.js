@@ -190,6 +190,15 @@ app.delete("/api/reviews/:id", async(req, res) => {
   }
 })
 
+//temporary
+// app.delete('/api/reviews', async (req,res) => {
+//   try{
+//     res.json(await Review.deleteMany({}))
+//   }catch(err) {
+//     res.send(400).json(err)
+//   }
+// })
+
 // delete menu item
 app.delete("/api/menu-items/:id", async(req, res) => {
   try {
