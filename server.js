@@ -1,217 +1,210 @@
-//declare a variable for our port number
 const PORT = process.env.PORT || 4000;
 
-// Import Dependencies
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser")
-require("dotenv").config()
+const bodyParser = require("body-parser");
+require("dotenv").config();
 
-// database connection
-const mongoose = require("mongoose")
-const mongoURI = process.env.MONGO_URI
-mongoose.connect(mongoURI)
-const db = mongoose.connection
-db.on("connected", () => { console.log("mongoose connected") })
+const mongoose = require("mongoose");
+const mongoURI = process.env.MONGO_URI;
+mongoose.connect(mongoURI);
 
-// Database Variables
-const MenuItem = require("./models/MenuItem")
-const Restaurant = require("./models/Restaurant")
-const Review = require("./models/Review")
-const User = require("./models/users")
+const db = mongoose.connection;
+db.on("connected", () => {
+  console.log("mongoose connected");
+});
 
-// Create our app object
+const MenuItem = require("./models/MenuItem");
+const Restaurant = require("./models/Restaurant");
+const Review = require("./models/Review");
+const User = require("./models/users");
+
+const faker = require('faker'); // Import the faker library
 const app = express();
 
-// set up middleware
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-//home route for testing our app
+// Home route for testing your app
 app.get("/", async (req, res) => {
   res.send("Hello World");
 });
 
-// --------------------------READ (Index Route) --------------------------
-// GET /review-menu-items Display a list of all reviewed menu items.
-// get all restaurants
-// app.get('/api/restaurants', (req, res) => {
-//   Restaurant.find({}, (err, restaurants) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Error retrieving data' });
-//     }
-//     return res.json(restaurants);
-//   });
-// });
+// -------------------------- RESTAURANTS --------------------------
+
+// GET all restaurants
 app.get('/api/restaurants', async (req, res) => {
   try {
-    res.json(await Restaurant.find({}))
+    res.json(await Restaurant.find({}));
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error);
   }
-})
+});
 
-// get menu items
-// app.get('/api/menu-items', async (req, res) => {
-//   MenuItem.find({}, (err, menuItems) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Error retrieving data' });
-//     }
-//     return res.json(menuItems);
-//   });
-// });
+// Create a new restaurant
+app.post('/api/restaurants', async (req, res) => {
+  try {
+    res.json(await Restaurant.create(req.body));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+// Edit a restaurant
+app.get("/api/restaurants/:id/edit", async (req, res) => {
+  try {
+    res.json(await Restaurant.findById(req.params.id));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+app.put("/api/restaurants/:id", async (req, res) => {
+  const updatedRestaurant = await Restaurant.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  console.log(updatedRestaurant);
+});
+
+// Delete a restaurant
+app.delete("/api/restaurants/:id", async (req, res) => {
+  try {
+    res.json(await Restaurant.findByIdAndDelete(req.params.id));
+    console.log(`${req.params.id} deleted`);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+// -------------------------- MENU ITEMS --------------------------
+
+// GET all menu items
 app.get('/api/menu-items', async (req, res) => {
   try {
-    res.json(await MenuItem.find({}))
+    res.json(await MenuItem.find({}));
   } catch (error) {
-    res.status(500).json((error))
+    res.status(500).json(error);
   }
 });
-// get all reviews
+
+// Create a new menu item
+app.post("/api/menu-items", async (req, res) => {
+  try {
+    res.json(await MenuItem.create(req.body));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+// Edit a menu item
+app.get("/api/menu-items/:id/edit", async (req, res) => {
+  try {
+    res.json(await MenuItem.findById(req.params.id));
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+app.put("/api/menu-items/:id", async (req, res) => {
+  const updatedMenuItem = await MenuItem.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  console.log(updatedMenuItem);
+});
+
+// Delete a menu item
+app.delete("/api/menu-items/:id", async (req, res) => {
+  try {
+    res.json(await MenuItem.findByIdAndDelete(req.params.id));
+    console.log(`${req.params.id} deleted`);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+// -------------------------- REVIEWS --------------------------
+
+// Generate and add fake reviews to the database
+app.post('/api/fake-reviews', async (req, res) => {
+  try {
+    const fakeReviews = [];
+    for (let i = 0; i < 10; i++) {
+      const fakeReview = new Review({
+        restaurantName: faker.company.companyName(),
+        menuItemName: faker.lorem.word(),
+        text: faker.lorem.paragraph(),
+        rating: faker.datatype.number({ min: 1, max: 5 }),
+      });
+
+      fakeReviews.push(fakeReview);
+    }
+
+    // Save the fake reviews to the database
+    await Review.insertMany(fakeReviews);
+
+    res.json({ message: 'Fake reviews created and added to the database' });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// GET all reviews
 app.get('/api/reviews', async (req, res) => {
   try {
-    res.json(await Review.find({}))
+    res.json(await Review.find({}));
   } catch (error) {
-    res.status(500).json((error))
+    res.status(500).json(error);
   }
 });
 
-// --------------------------CREATE (New and Post Route) --------------------------
-// GET /review-menu-items/new Display a form for adding a new menu item review.
-// POST /review-menu-items: Create a new menu item review
-// create restaurant
-// app.post('/api/restaurants', (req, res) => {
-//   const { name, description } = req.body;
-//   const newRestaurant = new Restaurant({ name, description });
-
-//   newRestaurant.save((err, restaurant) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Error creating restaurant' });
-//     }
-//     return res.status(201).json(restaurant);
-//   });
-// });
-app.post('/api/restaurants', async (req, res) => {
-  try{
-    res.json(await Restaurant.create(req.body))
-}catch (error){
-    res.status(400).json(error)
-}
-});
-
-// create menu item 
-// app.post('/api/menu-items', (req, res) => {
-//   const { restaurantId, name, price } = req.body;
-//   const newMenuItem = new MenuItem({ restaurantId, name, price });
-
-//   newMenuItem.save((err, menuItem) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Error creating menu item' });
-//     }
-//     return res.status(201).json(menuItem);
-//   });
-// });
-app.post("/api/menu-items", async (req, res)=> {
-  try{
-    res.json(await MenuItem.create(req.body))
-  } catch (error) {
-    res.status(400).json(error)
-  }
-})
-
-// create review
+// Create a new review
 app.post('/api/reviews', async (req, res) => {
-  try{
-    res.json(await Review.create(req.body))
-}catch (error){
-    res.status(400).json(error)
-}
-})
-
-// ------------------------ SHOW --------------------------
-// GET /review-menu-items/:id Display the details of a specific menu item review.
-app.get("/api/reviews/:id", async(req,res)=>{
-  try{
-      res.json(await Review.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-
-// -------------------------- UPDATE / Edit -------------------------- 
-// GET /review-menu-items/id/edit: Display a form for editing a menu item review.
-// PUT /review-menu-items/id: Update a menu item review.
-app.get("/api/reviews/:id/edit", async(req,res)=>{
-  try{
-      res.json(await Review.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-app.put("/api/reviews/:id", async(req,res)=>{
-  const updatedReview = await Review.findByIdAndUpdate(req.params.id, req.body, {new:true})
-  console.log(updatedReview)
-})
-
-// edit menu item
-app.get("/api/menu-items/:id/edit", async(req,res)=>{
-  try{
-      res.json(await MenuItem.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-app.put("/api/menu-items/:id", async(req,res)=>{
-  const updatedReview = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {new:true})
-  console.log(updatedReview)
-})
-
-// edit restaurant
-app.get("/api/restaurants/:id/edit", async(req,res)=>{
-  try{
-      res.json(await Restaurant.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-app.put("/api/restaurants/:id", async(req,res)=>{
-  const updatedReview = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {new:true})
-  console.log(updatedReview)
-})
-
-// -------------------------- DELETE --------------------------
-// DELETE /review-menu-items/id: Delete a menu item review
-app.delete("/api/reviews/:id", async(req, res) => {
   try {
-    res.json(await Review.findByIdAndDelete(req.params.id))
-    console.log(`${req.params.id} deleted`)
+    res.json(await Review.create(req.body));
   } catch (error) {
-    response.send(400).json(error)
+    res.status(400).json(error);
   }
-})
+});
 
-// delete menu item
-app.delete("/api/menu-items/:id", async(req, res) => {
+// Display details of a specific review
+app.get("/api/reviews/:id", async (req, res) => {
   try {
-    res.json(await MenuItem.findByIdAndDelete(req.params.id))
-    console.log(`${req.params.id} deleted`)
+    res.json(await Review.findById(req.params.id));
   } catch (error) {
-    response.send(400).json(error)
+    res.status(400).json(error);
   }
-})
-// delete restaurant
-app.delete("/api/restaurants/:id", async(req, res) => {
+});
+
+// Edit a review
+app.get("/api/reviews/:id/edit", async (req, res) => {
   try {
-    res.json(await Restaurant.findByIdAndDelete(req.params.id))
-    console.log(`${req.params.id} deleted`)
+    res.json(await Review.findById(req.params.id));
   } catch (error) {
-    response.send(400).json(error)
+    res.status(400).json(error);
   }
-})
+});
+
+app.put("/api/reviews/:id", async (req, res) => {
+  const updatedReview = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  console.log(updatedReview);
+});
+
+// Delete a review
+app.delete("/api/reviews/:id", async (req, res) => {
+  try {
+    res.json(await Review.findByIdAndDelete(req.params.id));
+    console.log(`${req.params.id} deleted`);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
 
 // LISTEN
 app.listen(PORT, () => {
-  console.log(`Listening to : ${PORT}`)
-})
-
-
+  console.log(`Listening to : ${PORT}`);
+});
