@@ -19,7 +19,8 @@ const Restaurant = require("./models/Restaurant");
 const Review = require("./models/Review");
 const User = require("./models/users");
 
-const faker = require('faker'); // Import the faker library
+
+// const faker = require('faker'); // Import the faker library
 const app = express();
 
 // Middleware
