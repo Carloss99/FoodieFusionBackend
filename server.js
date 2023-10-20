@@ -203,6 +203,14 @@ app.delete("/api/reviews/:id", async (req, res) => {
     res.status(400).json(error);
   }
 });
+//temporary
+// app.delete(‘/api/reviews’, async (req,res) => {
+//     try{
+//       res.json(await Review.deleteMany({}))
+//     }catch(err) {
+//       res.send(400).json(err)
+//     }
+//   })
 
 // LISTEN
 app.listen(PORT, () => {
