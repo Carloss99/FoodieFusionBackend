@@ -18,11 +18,13 @@ const MenuItem = require("./models/MenuItem");
 const Restaurant = require("./models/Restaurant");
 const Review = require("./models/Review");
 const User = require("./models/users");
-
+//variable for user auth routes 
+const userController = require("./controllers/users_controller")
 
 // const faker = require('faker'); // Import the faker library
 const app = express();
 
+app.use('/api/userreviews', userController)
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -213,6 +215,8 @@ app.delete("/api/reviews/:id", async (req, res) => {
 //       res.send(400).json(err)
 //     }
 //   })
+
+
 
 // LISTEN
 app.listen(PORT, () => {
