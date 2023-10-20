@@ -130,7 +130,28 @@ app.delete("/api/menu-items/:id", async (req, res) => {
 // -------------------------- REVIEWS --------------------------
 
 // Generate and add fake reviews to the database
+// app.post('/api/fake-reviews', async (req, res) => {
+//   try {
+//     const fakeReviews = [];
+//     for (let i = 0; i < 10; i++) {
+//       const fakeReview = new Review({
+//         restaurantName: faker.company.companyName(),
+//         menuItemName: faker.lorem.word(),
+//         text: faker.lorem.paragraph(),
+//         rating: faker.datatype.number({ min: 1, max: 5 }),
+//       });
 
+//       fakeReviews.push(fakeReview);
+//     }
+
+//     // Save the fake reviews to the database
+//     await Review.insertMany(fakeReviews);
+
+//     res.json({ message: 'Fake reviews created and added to the database' });
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// });
 
 // GET all reviews
 app.get('/api/reviews', async (req, res) => {
