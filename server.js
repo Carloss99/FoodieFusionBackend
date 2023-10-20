@@ -164,76 +164,6 @@ app.get('/api/reviews', async (req, res) => {
 
 // Create a new review
 app.post('/api/reviews', async (req, res) => {
-  try{
-    res.json(await Review.create(req.body))
-}catch (error){
-    res.status(400).json(error)
-}
-})
-
-// ------------------------ SHOW --------------------------
-// GET /review-menu-items/:id Display the details of a specific menu item review.
-app.get("/api/reviews/:id", async(req,res)=>{
-  try{
-      res.json(await Review.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-
-// -------------------------- UPDATE / Edit -------------------------- 
-// GET /review-menu-items/id/edit: Display a form for editing a menu item review.
-// PUT /review-menu-items/id: Update a menu item review.
-app.get("/api/reviews/:id/edit", async(req,res)=>{
-  try{
-      res.json(await Review.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-app.put("/api/reviews/:id", async(req,res)=>{
-  const updatedReview = await Review.findByIdAndUpdate(req.params.id, req.body, {new:true})
-  console.log(updatedReview)
-})
-
-// edit menu item
-app.get("/api/menu-items/:id/edit", async(req,res)=>{
-  try{
-      res.json(await MenuItem.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-app.put("/api/menu-items/:id", async(req,res)=>{
-  const updatedReview = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {new:true})
-  console.log(updatedReview)
-})
-
-// edit restaurant
-app.get("/api/restaurants/:id/edit", async(req,res)=>{
-  try{
-      res.json(await Restaurant.findById(req.params.id))
-  } catch (error){
-      res.status(400).json(error)
-  }
-})
-app.put("/api/restaurants/:id", async(req,res)=>{
-  const updatedReview = await Restaurant.findByIdAndUpdate(req.params.id, req.body, {new:true})
-  console.log(updatedReview)
-})
-
-// -------------------------- DELETE --------------------------
-// DELETE /review-menu-items/id: Delete a menu item review
-//Temporary 
-app.delete('/api/reviews', async (req,res) => {
-  try{
-    res.json(await Review.deleteMany({}))
-  }catch(error) {
-    res.send(400).json(error)
-  }
-})
-
-app.delete("/api/reviews/:id", async(req, res) => {
   try {
     res.json(await Review.create(req.body));
   } catch (error) {
@@ -241,10 +171,8 @@ app.delete("/api/reviews/:id", async(req, res) => {
   }
 });
 
-
-
-// delete menu item
-app.delete("/api/menu-items/:id", async(req, res) => {
+// Display details of a specific review
+app.get("/api/reviews/:id", async (req, res) => {
   try {
     res.json(await Review.findById(req.params.id));
   } catch (error) {
