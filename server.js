@@ -24,10 +24,12 @@ const userController = require("./controllers/users_controller")
 // const faker = require('faker'); // Import the faker library
 const app = express();
 
-app.use('/api/userreviews', userController)
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use('/api/userreviews', userController)
 
 // Home route for testing your app
 app.get("/", async (req, res) => {
