@@ -2,14 +2,10 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const router = express.Router()
 const User = require('../models/users.js')
-const Review = require("./models/Review");
 
-router.get('/userreviews/login', async (req, res) => {
-  try {
-    res.json(await Review.find({}));
-  } catch (error) {
-    res.status(500).json(error);
-  }
+
+router.get('/', (req, res) => {
+  res.json('Hello World')
 })
 
 router.get('/createaccount', (req, res) => {
