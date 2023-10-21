@@ -183,7 +183,7 @@ app.get("/api/reviews/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json(error);
   }
-});
+})
 
 // Edit a review
 app.get("/api/reviews/:id/edit", async (req, res) => {
