@@ -199,17 +199,22 @@ app.get("/api/reviews/:id", async (req, res) => {
 });
 
 // Edit a review
-app.get("/api/reviews/:id/edit", async (req, res) => {
-  try {
-    res.json(await Review.findById(req.params.id));
-  } catch (error) {
-    res.status(400).json(error);
-  }
-});
+// app.get("/api/reviews/:id/edit", async (req, res) => {
+//   try {
+//     res.json(await Review.findById(req.params.id));
+//   } catch (error) {
+//     res.status(400).json(error);
+//   }
+// });
 
 app.put("/api/reviews/:id", async (req, res) => {
-  const updatedReview = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  console.log(updatedReview);
+  try{
+    const updatedReview = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    console.log(updatedReview);
+    res.json(updatedReview)
+  } catch (error) {
+    res.status(400).json(error)
+  }
 });
 
 // Delete a review
