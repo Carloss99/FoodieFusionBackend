@@ -167,6 +167,19 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
+// GET logged in user reviews 
+app.get('/api/reviews/user/:userName', async (req, res) => {
+  try {
+    let user = await User.findOne({username: req.params.userName })
+    console.log(Review)
+    let allReviews = await Review.find({author: user.id})
+    console.log(allReviews)
+    res.json(await Review.find({author: user.id}))
+  } catch (error) {
+    res.status(500).json(error);
+  }
+})
+
 // Create a new review
 app.post('/api/reviews', async (req, res) => {
   try {
