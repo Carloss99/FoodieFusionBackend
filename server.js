@@ -171,7 +171,7 @@ app.get('/api/reviews', async (req, res) => {
 app.get('/api/reviews/user/:userName', async (req, res) => {
   try {
     let user = await User.find({username: req.params.userName })
-    res.json(await Review.find({author: user._id}))
+    res.json(await Review.find({author: user.id}))
   } catch (error) {
     res.status(500).json(error);
   }
