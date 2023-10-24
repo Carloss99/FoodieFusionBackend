@@ -65,6 +65,8 @@ router.put("/login", async (req, res) => {
   console.log(req.body)
   try {
     const foundUser = await User.findOne({ username: req.body.username })
+    
+
     if (bcrypt.compareSync(req.body.password, foundUser.password)) {
       res.json({ username: foundUser.username })
     } else {
@@ -74,5 +76,7 @@ router.put("/login", async (req, res) => {
     res.json('Oops, there was an error. Please try again')
   }
 })
+
+
 
 module.exports = router

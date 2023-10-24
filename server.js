@@ -167,6 +167,16 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
+// GET user reviews
+app.get('/api/reviews/user/:userName', async (req, res) => {
+  try {
+    let user = await User.find({username: req.params.userName })
+    res.json(await Review.find({author: user._id}))
+  } catch (error) {
+    res.status(500).json(error);
+  }
+})
+
 // Create a new review
 app.post('/api/reviews', async (req, res) => {
   try {
