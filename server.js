@@ -29,8 +29,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// app.use('/api/userreviews', userController)
-app.use('/api/reviews', userController)
+app.use('/api/userreviews', userController)
+// app.use('/api/reviews', userController)
 
 // Home route for testing your app
 app.get("/", async (req, res) => {
