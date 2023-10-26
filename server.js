@@ -29,7 +29,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use('/api/userreviews', userController)
+// app.use('/api/userreviews', userController)
+app.use('/api/reviews', userController)
 
 // Home route for testing your app
 app.get("/", async (req, res) => {
@@ -93,7 +94,7 @@ app.get('/api/menu-items', async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-});
+}); 
 
 // Create a new menu item
 app.post("/api/menu-items", async (req, res) => {

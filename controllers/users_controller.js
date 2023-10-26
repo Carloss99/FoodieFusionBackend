@@ -8,9 +8,9 @@ router.get('/', (req, res) => {
   res.json('Hello World')
 })
 
-router.get('/createaccount', (req, res) => {
-  res.json('Create account route')
-})
+// router.get('/createaccount', (req, res) => {
+//   res.json('Create account route')
+// })
 
 //new user registration form POST
 // router.post('/createaccount', (req, res) => {
@@ -65,8 +65,6 @@ router.put("/login", async (req, res) => {
   console.log(req.body)
   try {
     const foundUser = await User.findOne({ username: req.body.username })
-    
-
     if (bcrypt.compareSync(req.body.password, foundUser.password)) {
       res.json({ username: foundUser.username })
     } else {
