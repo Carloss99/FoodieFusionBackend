@@ -30,6 +30,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/api/userreviews', userController)
+// app.use('/api/reviews', userController)
 
 // Home route for testing your app
 app.get("/", async (req, res) => {
@@ -93,7 +94,7 @@ app.get('/api/menu-items', async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-});
+}); 
 
 // Create a new menu item
 app.post("/api/menu-items", async (req, res) => {
@@ -168,7 +169,7 @@ app.get('/api/reviews', async (req, res) => {
 });
 
 // GET logged in user reviews 
-app.get('/api/reviews/user/:userName', async (req, res) => {
+app.get('/api/userreviews/user/:userName', async (req, res) => {
   try {
     let user = await User.findOne({username: req.params.userName })
     console.log(Review)
